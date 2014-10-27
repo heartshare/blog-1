@@ -25,20 +25,28 @@ AppAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => 'My Company',
+                'brandLabel' => '后台主页',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
+                    'class' => 'navbar-inverse navbar-fixed-top'
                 ],
             ]);
             $menuItems = [
-                ['label' => 'Home', 'url' => ['/site/index']],
+                ['label' => '博客首页', 'url' => ['/site/index']]
             ];
             if (Yii::$app->user->isGuest) {
-                $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+                $menuItems[] = ['label' => '登录', 'url' => ['/site/login']];
             } else {
                 $menuItems[] = [
-                    'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+                    'label' => '文章管理',
+                    'url' => ['/'],
+                    'items' => [
+                        ['label' => '文章列表', 'url' => ['/article/list']],
+                        ['label' => '添加文章', 'url' => ['/article/add']]
+                    ]
+                ];
+                $menuItems[] = [
+                    'label' => '退出 ( ' . Yii::$app->user->identity->username . ' )',
                     'url' => ['/site/logout'],
                     'linkOptions' => ['data-method' => 'post']
                 ];
