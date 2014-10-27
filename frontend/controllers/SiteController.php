@@ -119,8 +119,11 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
+        if ($model->load(Yii::$app->request->post()) && $user = $model->signup()) {
+            if($user->hasErrors()){
+                Yii::$app->session->setFlash('error', '注册失败!');
+            }else{
+                Yii::$app->session->setFlash('success', '恭喜,注册成功!');
                 if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();
                 }
@@ -136,15 +139,13 @@ class SiteController extends Controller
     {
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail()) {
-                Yii::$app->getSession()->setFlash('success', 'Check your email for further instructions.');
-
+            if ($result = $model->sendEmail()) {
+                Yii::$app->getSession()->setFlash('success', '邮件发送成功,请查阅邮件进行后续操作.');
                 return $this->goHome();
             } else {
-                Yii::$app->getSession()->setFlash('error', 'Sorry, we are unable to reset password for email provided.');
+                Yii::$app->getSession()->setFlash('error', '抱歉,我们不能给你提供此账号的密码重置邮件.');
             }
         }
-
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
         ]);
