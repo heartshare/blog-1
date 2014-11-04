@@ -23,9 +23,11 @@ class CommonController extends Controller
                     [
                         'actions' => ['login', 'error'],
                         'allow' => true,
+                        'roles' => ['?']
                     ],
                     [
-                        'allow' => false,
+                        'allow' => true,
+                        'roles' => ['@']
                     ],
                 ],
             ],
@@ -49,4 +51,5 @@ class CommonController extends Controller
             ],
         ];
     }
+
 }
