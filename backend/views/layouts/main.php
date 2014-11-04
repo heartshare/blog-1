@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
+use frontend\widgets\Alert;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -38,11 +39,19 @@ AppAsset::register($this);
                 $menuItems[] = ['label' => '登录', 'url' => ['/site/login']];
             } else {
                 $menuItems[] = [
+                    'label' => '分类管理',
+                    'url' => ['/'],
+                    'items' => [
+                        ['label' => '分类列表', 'url' => \yii\helpers\Url::toRoute('category/')],
+                        ['label' => '添加分类', 'url' => \yii\helpers\Url::toRoute('category/create')]
+                    ]
+                ];
+                $menuItems[] = [
                     'label' => '文章管理',
                     'url' => ['/'],
                     'items' => [
-                        ['label' => '文章列表', 'url' => ['/article/list']],
-                        ['label' => '添加文章', 'url' => ['/article/add']]
+                        ['label' => '文章列表', 'url' => \yii\helpers\Url::toRoute('article/')],
+                        ['label' => '添加文章', 'url' => \yii\helpers\Url::toRoute('article/create')]
                     ]
                 ];
                 $menuItems[] = [
@@ -62,6 +71,7 @@ AppAsset::register($this);
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
+        <?= Alert::widget() ?>
         <?= $content ?>
         </div>
     </div>
