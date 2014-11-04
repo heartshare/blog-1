@@ -40,13 +40,31 @@ class Article extends \yii\db\ActiveRecord
     const STATUS_DELETE = 'delete';//删除
 
     /**
+     * @return array 文章类型数组，键名为存入数据库的值，可用于表单值；键值为代表的中文名
+     */
+    public static function types()
+    {
+        return [
+            'post' => '文章'
+        ];
+    }
+
+    public static function status(){
+        return [
+            self::STATUS_PUBLISH => '发布',
+            self::STATUS_DELETE => '删除',
+            self::STATUS_DRAFT => '草稿'
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
             [
-                ['content', 'title', 'create_time', 'modify_time', 'type', 'status'],
+                ['content', 'title', 'create_time', 'modify_time', 'type', 'status','user_id','category_id'],
                 'required',
                 'message' => '{attribute}不能为空',
                 'on' => ['create']
@@ -103,7 +121,7 @@ class Article extends \yii\db\ActiveRecord
             'allow_comment' => '是否允许评论',
             'comments_total' => '评论统计',
             'user_id' => '作者ID',
-            'category_id' => '分类ID',
+            'category_id' => '文章分类',
         ];
     }
 
@@ -146,15 +164,22 @@ class Article extends \yii\db\ActiveRecord
         ];
     }
 
-    public function addArticle(){}
+    public function beforeValidate(){
+        $this->modify_time = time();
+        if ($this->getScenario() == 'create'){
+            $this->create_time = time();
+            $this->view = 0;
+            $this->user_id = Yii::$app->user->id;
+            $this->comments_total = 0;
+        }
+        return true;
+    }
 
-    /**
-     * 获取所有的文章列表
-     * @param integer $page 页码
-     * @param integer $pageSize 页面大小
-     * @return array|\yii\db\ActiveRecord[]
-     */
-    public static function getArticleList($page,$pageSize){
-        return static::find()->indexBy('create_time')->limit($pageSize)->offset($page)->asArray()->all();
+    public function beforeSave(){
+        return true;
+    }
+
+    public function afterFind(){
+        return true;
     }
 }
