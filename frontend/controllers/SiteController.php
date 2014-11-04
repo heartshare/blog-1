@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\Article;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -67,7 +68,9 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $articles = Article::findAll(['type'=>'post']);
+        return $this->render('index',
+            ['articles' => $articles]);
     }
 
     public function actionLogin()
